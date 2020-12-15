@@ -1,4 +1,6 @@
 ﻿using System;
+using console;
+using Servicios;
 
 namespace cli
 {
@@ -6,7 +8,15 @@ namespace cli
   {
     static void Main(string[] args)
     {
-      Console.WriteLine("Hello World!");
+      ServiciosImportacion imp = new ServiciosImportacion();
+
+      Aplicacion app = new Aplicacion(imp);
+
+      app.Run();
+
+
+      Console.WriteLine("Presionar ENTER");
+      Console.ReadLine();
     }
   }
 }
