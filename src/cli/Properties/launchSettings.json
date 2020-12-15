@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "cli": {
+      "commandName": "Project",
+      "commandLineArgs": "--file=D:\\CURSOS\\PTR2020_Avanzado\\listados\\libros.csv"
+    }
+  }
+}

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using Entidades.Articulos;
 using Figgle;
-//  using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 //  using Microsoft.Extensions.Logging;
 using PromptSharp;
 using Servicios;
@@ -19,9 +19,12 @@ namespace console
   {
     private readonly ServiciosImportacion _imp;
 
-    public Aplicacion(ServiciosImportacion imp /*, ILogger<Aplicacion> logger*/)
+    private readonly IConfiguration _config;
+
+    public Aplicacion(ServiciosImportacion imp, IConfiguration config /*, ILogger<Aplicacion> logger*/)
     {
       _imp = imp;
+      _config = config;
     }
 
     public void Run()
@@ -48,7 +51,8 @@ namespace console
         //
         //  NOTA: cuando ponemos el menu, no tiene sentido usar la opcion --tipo
         //
-        string file = "" ;//_config["file"];
+        //  string file = @"D:\CURSOS\PTR2020_Avanzado\listados\libros.csv";  
+        string file = _config["file"];
 
         if (opcion.In(0, 2, 1) && file == null)
           throw new ApplicationException("La opcion seleccionada necesita que se pase un archivo en --file");

@@ -6,10 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Figgle" Version="0.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\entidades\entidades.csproj" />
     <ProjectReference Include="..\PromptSharp\PromptSharp.csproj" />
     <ProjectReference Include="..\servicios\servicios.csproj" />
     <ProjectReference Include="..\utiles\utiles.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="cli.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
