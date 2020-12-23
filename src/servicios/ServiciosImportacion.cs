@@ -5,6 +5,9 @@ using System.IO;
 using Entidades.Articulos;
 using System.Globalization;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using servicios;
 //  using Microsoft.Extensions.Configuration;
 //  using Microsoft.Extensions.Logging;
 using Utiles;
@@ -15,21 +18,21 @@ namespace Servicios
   /// <summary>
   /// Clase de importacion
   /// </summary>
-  public class ServiciosImportacion
+  public class ServiciosImportacion : IServiciosImportacion
   {
     private string _fileName;
     //
-    //  private readonly IConfiguration _config;
+    private readonly IConfiguration _config;
 
-    //  private readonly ILogger<ServiciosImportacion> _logger;
+    private readonly ILogger<ServiciosImportacion> _logger;
 
     /// <summary>
     /// Constructor del servicio de importacion por ahora a partir de un nombre de archivo
     /// </summary>
-    public ServiciosImportacion(/*IConfiguration config, ILogger<ServiciosImportacion> logger*/)
+    public ServiciosImportacion(IConfiguration config, ILogger<ServiciosImportacion> logger)
     {
-      //_config = config;
-      //_logger = logger;
+      _config = config;
+      _logger = logger;
     }
 
     /// <summary>
@@ -90,7 +93,7 @@ namespace Servicios
 
       int saltarLineas = 1; // _config.GetValue<int>("saltarLineas");
       string separador = ";"; // _config["separador"] ?? throw new ApplicationException("Por favor colocar un separador!!!");
-      string[] formatos = { "yyyy", "yyyy-MM-dd"} ; //  _config.GetSection("formatosFecha").Get<string[]>();
+      string[] formatos = { "yy", "yyyy-MM-dd"} ; //  _config.GetSection("formatosFecha").Get<string[]>();
 
       //  Libro[] resultado = new Libro[100];
       //  int idx = 0;
@@ -150,9 +153,9 @@ namespace Servicios
               nuevo.Publicacion = fechaTemp;
             }
             else
-              //  _logger.LogCritical("Formato de fecha incorrecto. Se recibe: {fecha}", campos[5]);
+              _logger.LogCritical("Formato de fecha incorrecto. Se recibe: {fecha}", campos[5]);
 
-              Console.WriteLine($"WARNING: formato incorrecto!! Recibido: {campos[5]}");   //  TODO agregar LOG
+            //  Console.WriteLine($"WARNING: formato incorrecto!! Recibido: {campos[5]}");   //  TODO agregar LOG
           }
 
           nuevo.Publico = campos[8].ToUpper() switch

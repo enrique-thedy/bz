@@ -8,23 +8,29 @@ using System.Text;
 using Entidades.Articulos;
 using Figgle;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 //  using Microsoft.Extensions.Logging;
 using PromptSharp;
+using servicios;
 using Servicios;
 using Utiles;
+// ReSharper disable LocalizableElement
 
 namespace console
 {
   public class Aplicacion
   {
-    private readonly ServiciosImportacion _imp;
+    private readonly IServiciosImportacion _imp;
 
     private readonly IConfiguration _config;
 
-    public Aplicacion(ServiciosImportacion imp, IConfiguration config /*, ILogger<Aplicacion> logger*/)
+    private readonly ILogger<Aplicacion> _logger;
+
+    public Aplicacion(IServiciosImportacion imp, IConfiguration config, ILogger<Aplicacion> logger)
     {
       _imp = imp;
       _config = config;
+      _logger = logger;
     }
 
     public void Run()
@@ -63,11 +69,11 @@ namespace console
             {
               if (Prompt.Confirm($"Es el archivo correcto? ==> {file}"))
               {
-                //_logger.LogInformation("Iniciando el procesamiento del archivo de Libros {archivo}", file);
+                _logger.LogInformation("Iniciando el procesamiento del archivo de Libros {archivo}", file);
 
                 IEnumerable<Libro> lista = _imp.ImportarCSV(file);
 
-                //_logger.LogInformation("Ejecutando pruebas en memoria...");
+                _logger.LogInformation("Ejecutando pruebas en memoria...");
 
                 //  ejecutamos las pruebas sobre la lista importada (memoria)
                 //
@@ -230,7 +236,7 @@ namespace console
       //  Ejemplo #3
       //  DELEGADOS
       //
-      Dos_Predicados_Con_Funciones_Locales("Ejemplo #3", lista);
+      Dos_Predicados_Con_Funciones_Locales("Ejemplo #3", lista, 5000);
 
       //  Ejemplo #4
       //  
@@ -336,7 +342,7 @@ namespace console
     }
 
 
-    private void Dos_Predicados_Con_Funciones_Locales(string titulo, IEnumerable<Libro> ienum)
+    private void Dos_Predicados_Con_Funciones_Locales(string titulo, IEnumerable<Libro> ienum, int pag)
     {
       Console.WriteLine(
         $"\n===={titulo}=======================================================================================");
@@ -345,7 +351,7 @@ namespace console
       Console.WriteLine();
 
       Func<Libro, bool> predicado = FiltroTexto;
-      int paginas = 600;
+      //int paginas = 600;
 
       foreach (Libro libro in ienum)
       {
@@ -367,7 +373,7 @@ namespace console
 
       bool FiltroPaginas(Libro item)
       {
-        return item.Paginas > paginas;
+        return item.Paginas > pag;
       }
 
       bool FiltroTexto(Libro item)
@@ -413,17 +419,30 @@ namespace console
     /// 
     /// <code>
     /// <![CDATA[
-    /// class Enumerable ==> MEMORIA
+    ///   class Enumerable ==> MEMORIA
     ///
-    ///  Func<Libro, bool> predicado = FiltroPaginas;
+    ///   Metodo Where --> predicado (no puedo cambiarlo)
     ///
-    ///  f(x) = x * 10
+    ///   Func<Libro, bool> predicado = FiltroPaginas;
+    ///
+    ///   predicado es una funcion que con una variable libro nos retorna true o false
+    /// 
+    ///   f(libro) = true
+    ///
+    ///   f(libro) = libro.Titulo.Contains(texto)
+    ///
+    ///   (libro) => libro.Titulo.Contains(texto)         --> exp lambda
+    ///   (j) => j.Titulo.Contains(texto)                 --> exp lambda
+    ///   j => j.Titulo.Contains(texto)                   --> exp lambda
+    ///   (Libro libro) => libro.Titulo.Contains(texto)   --> exp lambda
+    /// 
+    ///   f(x) = x * 10
     ///  
-    ///  int XPor10(int x) { return x * 10; }
+    ///   int XPor10(int x) { return x * 10; }
     ///
-    ///  (x) => x * 10
+    ///   (x) => x * 10          --> exp lambda
     ///
-    ///  class Queryable ==> DB
+    ///   class Queryable ==> DB
     /// ]]>
     /// </code>
     /// <param name="titulo"></param>
@@ -437,7 +456,9 @@ namespace console
       Console.WriteLine();
 
       var listaFiltrada =
-        lista.Where(p => p.Paginas > 200 && (p.Titulo.Contains("Boot") || p.Titulo.Contains("Agnos")));
+        lista
+          .Where((p) => p.Paginas > 200)
+          .Where(libro => (libro.Titulo.Contains("Boot") || libro.Titulo.Contains("Agnos")));
 
       foreach (var libro in listaFiltrada)
         Console.WriteLine($"Titulo: {libro?.Titulo} {libro.Paginas}");
