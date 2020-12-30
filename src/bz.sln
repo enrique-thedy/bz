@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "servicios", "servicios\serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "entidades", "entidades\entidades.csproj", "{BE42CFD2-7E93-460D-BED1-7205C4EEE455}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "utiles", "utiles\utiles.csproj", "{D450DB45-B908-4474-9C4C-1AC09044830C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "utiles", "utiles\utiles.csproj", "{D450DB45-B908-4474-9C4C-1AC09044830C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromptSharp", "PromptSharp\PromptSharp.csproj", "{DE7945E3-49E7-4811-A732-EDD639AFD7F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "datos", "datos\datos.csproj", "{D6922460-C21A-4429-8A13-C2FA19748149}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DE7945E3-49E7-4811-A732-EDD639AFD7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE7945E3-49E7-4811-A732-EDD639AFD7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE7945E3-49E7-4811-A732-EDD639AFD7F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6922460-C21A-4429-8A13-C2FA19748149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6922460-C21A-4429-8A13-C2FA19748149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6922460-C21A-4429-8A13-C2FA19748149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6922460-C21A-4429-8A13-C2FA19748149}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

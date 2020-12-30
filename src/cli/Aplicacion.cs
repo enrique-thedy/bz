@@ -22,13 +22,17 @@ namespace console
   {
     private readonly IServiciosImportacion _imp;
 
+    private readonly IServiciosExportacion _exp;
+
     private readonly IConfiguration _config;
 
     private readonly ILogger<Aplicacion> _logger;
 
-    public Aplicacion(IServiciosImportacion imp, IConfiguration config, ILogger<Aplicacion> logger)
+    public Aplicacion(IServiciosImportacion imp, IServiciosExportacion exp, IConfiguration config,
+      ILogger<Aplicacion> logger)
     {
       _imp = imp;
+      _exp = exp;
       _config = config;
       _logger = logger;
     }
@@ -44,7 +48,8 @@ namespace console
         {
           "Importar Libros desde --file y ejecutar las pruebas en memoria",
           "Importar Libros desde --file y guardar en la DB",
-          "*** Importar Autores desde --file [falta implementar guardar en la DB]",
+          "Importar Autores desde --file y mostrar en pantalla",
+          "*** Importar Autores desde --file y guardar en la DB",
           "Consultas varias desde el contexto",
           "Pruebas ingresando Libros"
         });
@@ -86,43 +91,42 @@ namespace console
             {
               if (Prompt.Confirm($"Es el archivo correcto? ==> {file}"))
               {
-                //_logger.LogInformation("Iniciando el procesamiento del archivo de Libros {archivo}", file);
+                _logger.LogInformation("Iniciando el procesamiento del archivo de Libros {archivo}", file);
 
                 IEnumerable<Libro> lista = _imp.ImportarCSV(file);
 
-                //_logger.LogInformation("Iniciando el proceso de exportacion");
+                _logger.LogInformation("Iniciando el proceso de exportacion");
 
                 //  eliminamos los datos previos??
-                if (Prompt.Confirm("Eliminamos datos previos?", true,
-                  "WARNING Esta operacion eliminara todos los datos de las 3 tablas de Articulos!!"))
-                {
-                  //_exp.ClearDatabase();
-                }
+                //  if (Prompt.Confirm("Eliminamos datos previos?", true, "WARNING Esta operacion eliminara todos los datos de las 3 tablas de Articulos!!"))
+                //  {
+                //    _exp.ClearDatabase();
+                //  }
 
                 //  pasamos la responsabilidad de la exportacion al componente adecuado...
                 //
-                //_exp.ExportarListaDeLibros(lista);
+                _exp.ExportarListaDeLibros(lista);
               }
             }
             break;
 
           case 2:
             {
-              //if (Prompt.Confirm($"Es el archivo correcto? ==> {file}"))
-              //{
-              //  //_logger.LogInformation("Iniciando el procesamiento del archivo de Autores {archivo}", file);
+              if (Prompt.Confirm($"Es el archivo correcto? ==> {file}"))
+              {
+                _logger.LogInformation("Iniciando el procesamiento del archivo de Autores {archivo}", file);
 
-              //  //var autoresTemp = _imp.ImportarAutores(file);
+                var autoresTemp = _imp.ImportarAutores(file);
 
-              //  Console.WriteLine("Lista de autores importados...");
+                Console.WriteLine("Lista de autores importados...");
 
-              //  foreach (var item in autoresTemp)
-              //  {
-              //    Console.WriteLine($"Se importo el siguiente par (idLibro, autor) ==> {item}");
+                foreach (var item in autoresTemp)
+                {
+                  Console.WriteLine($"Se importo el siguiente par (idLibro, autor) ==> {item}");
 
-              //    _logger.LogDebug("Se importo el siguiente par (idLibro, autor) ==> {tupla}", item);
-              //  }
-              //}
+                  _logger.LogDebug("Se importo el siguiente par (idLibro, autor) ==> {tupla}", item);
+                }
+              }
             }
             break;
 

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Channels;
 using console;
+using datos;
 using Entidades.Articulos;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using servicios;
 using Servicios;
@@ -39,19 +42,36 @@ namespace cli
             .AddEnvironmentVariables()
             .AddCommandLine(args)
         )
-        .ConfigureLogging(loggingBuilder => loggingBuilder.AddSerilog(
-          new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .WriteTo.Console()
-            .WriteTo.File(@"D:\bz.log")
-            .WriteTo.Seq("http://localhost:5341/dev")
-            .CreateLogger()))
-        .ConfigureServices((serv) =>
+        .ConfigureLogging(loggingBuilder =>
+          {
+            loggingBuilder.ClearProviders();
+
+            loggingBuilder.AddSerilog(
+              new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Console()
+                .WriteTo.File(@"D:\bz.log")
+                .WriteTo.Seq("http://localhost:5341/dev")
+                .CreateLogger());
+          }
+        )
+        .ConfigureServices((ctx, serv) =>
         {
           //  serv.AddScoped<ServiciosImportacion>();
           serv.AddScoped<IServiciosImportacion, ServiciosImportacion>();
+          serv.AddScoped<IServiciosExportacion, ServiciosExportacion>();
+
+          serv.AddDbContext<ExportacionContext>(build =>
+          {
+            //  https://www.connectionstrings.com/
+            //  Sitio interesante para obtener cadenas de conexion para casi todos los proveedores...
+            //
+            build.UseSqlServer(ctx.Configuration.GetConnectionString("curso"));
+            build.EnableDetailedErrors();
+            build.EnableSensitiveDataLogging();
+          });
+
           serv.AddScoped<Aplicacion>();
-          //  serv.AddScoped<ServiciosExportacion>();
         });
 
       var host = builder.Build();
@@ -82,6 +102,11 @@ namespace cli
         new Libro() {Titulo = "El jardin de senderos que se bifurcan"},
         new Libro() {Titulo = "El jardin de senderos que se bifurcan"}
       };
+    }
+
+    public IEnumerable<(string idLibro, string nombre)> ImportarAutores(string fileName)
+    {
+      throw new NotImplementedException();
     }
   }
 }

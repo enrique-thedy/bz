@@ -45,6 +45,9 @@ namespace Entidades.Articulos
     //  TODO_HECHO agregar las propiedades restantes para completar el modelo de dominio de Libro
     public Guid ID_Real { get; set; }
 
+    /// <summary>
+    /// ID que proviene de Google y no serviria para el sistema final
+    /// </summary>
     public string ID { get; set; }
 
     public string ISBN13 { get; set; }
@@ -87,11 +90,8 @@ namespace Entidades.Articulos
 
     public string LinkInfo { get; set; }
 
-    public ISet<LibroAutor> LibroAutores { get; set; }
+    //  public ISet<LibroAutor> LibroAutores { get; set; }
 
-    public Libro()
-    {
-      LibroAutores = new HashSet<LibroAutor>();
-    }
+    //  public Libro() { LibroAutores = new HashSet<LibroAutor>(); }
   }
 }

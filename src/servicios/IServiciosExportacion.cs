@@ -7,10 +7,8 @@ using Entidades.Articulos;
 
 namespace servicios
 {
-  public interface IServiciosImportacion
+  public interface IServiciosExportacion
   {
-    IEnumerable<Libro> ImportarCSV(string file);
-
-    IEnumerable<(string idLibro, string nombre)> ImportarAutores(string fileName);
+    void ExportarListaDeLibros(IEnumerable<Libro> lista);
   }
 }

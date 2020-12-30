@@ -1,3 +1,22 @@
 {
-  "file": "ERROR" 
+  "connectionStrings": {
+    "curso": "Server=HAL-9000;Database=curso;Trusted_Connection=True;"
+  },
+
+  "file": "ERROR",
+
+  "saltarLineas": 1,
+
+  "separador": ";",
+
+  "formatosFecha": [
+    "yyyy",
+    "yyyy-MM-dd"
+  ],
+
+  "dummy": {
+    "prop1": 123,
+    "prop2": false,
+    "prop3": "fdsfsdf"
+  }
 }

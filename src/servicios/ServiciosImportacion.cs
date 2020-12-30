@@ -16,6 +16,15 @@ using Utiles;
 namespace Servicios
 {
   /// <summary>
+  /// Sirve para leer configuracion de la seccion dummy en el json
+  /// </summary>
+  public class Dummy
+  {
+    public bool Prop2 { get; set; }
+    public int Prop1 { get; set; }
+    public string Prop3 { get; set; }
+  }
+  /// <summary>
   /// Clase de importacion
   /// </summary>
   public class ServiciosImportacion : IServiciosImportacion
@@ -91,9 +100,12 @@ namespace Servicios
       List<Libro> resultado = new List<Libro>();
 #endif
 
-      int saltarLineas = 1; // _config.GetValue<int>("saltarLineas");
-      string separador = ";"; // _config["separador"] ?? throw new ApplicationException("Por favor colocar un separador!!!");
-      string[] formatos = { "yy", "yyyy-MM-dd"} ; //  _config.GetSection("formatosFecha").Get<string[]>();
+      int? saltarLineas = _config.GetValue<int?>("saltarLineas");
+      string separador = _config["separador"] ?? throw new ApplicationException("Por favor colocar un separador!!!");
+      string[] formatos = _config.GetSection("formatosFecha").Get<string[]>();
+      
+      //  var xx = _config.GetSection("dummy").Get<Dummy>();
+
 
       //  Libro[] resultado = new Libro[100];
       //  int idx = 0;
@@ -272,59 +284,59 @@ namespace Servicios
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    //public IEnumerable<(string idLibro, string nombre)> ImportarAutores(string fileName)
-    //{
-    //  if (!File.Exists(fileName))
-    //    throw new ApplicationException("El archivo no existe")
-    //    {
-    //      Data =
-    //      {
-    //        {"archivo", fileName}
-    //      }
-    //    };
+    public IEnumerable<(string idLibro, string nombre)> ImportarAutores(string fileName)
+    {
+      if (!File.Exists(fileName))
+        throw new ApplicationException("El archivo no existe")
+        {
+          Data =
+          {
+            {"archivo", fileName}
+          }
+        };
 
-    //  using StreamReader rdr = new StreamReader(fileName);
+      using StreamReader rdr = new StreamReader(fileName);
 
-    //  List<(string id, string nombre)> resultado = new List<(string id, string nombre)>();
+      List<(string id, string nombre)> resultado = new List<(string id, string nombre)>();
 
-    //  int saltarLineas = _config.GetValue<int>("saltarLineas");
-    //  string separador = _config["separador"] ?? ";";
+      int saltarLineas = _config.GetValue<int>("saltarLineas");
+      string separador = _config["separador"] ?? ";";
 
-    //  //  Libro[] resultado = new Libro[100];
-    //  //  int idx = 0;
+      //  Libro[] resultado = new Libro[100];
+      //  int idx = 0;
 
-    //  while (!rdr.EndOfStream)
-    //  {
-    //    if (saltarLineas != 0)
-    //    {
-    //      rdr.ReadLine();
+      while (!rdr.EndOfStream)
+      {
+        if (saltarLineas != 0)
+        {
+          rdr.ReadLine();
 
-    //      saltarLineas--;
+          saltarLineas--;
 
-    //      continue;
-    //    }
+          continue;
+        }
 
-    //    string linea = rdr.ReadLine();
+        string linea = rdr.ReadLine();
 
-    //    string[] campos = linea?.Split(new[] { separador }, StringSplitOptions.None);
+        string[] campos = linea?.Split(new[] { separador }, StringSplitOptions.None);
 
-    //    if (campos?.Length == 2)
-    //    {
-    //      (string id, string aut) nuevo = default;
+        if (campos?.Length == 2)
+        {
+          (string id, string aut) nuevo = default;
 
-    //      nuevo.id = campos[0];
-    //      nuevo.aut = campos[1];
+          nuevo.id = campos[0];
+          nuevo.aut = campos[1];
 
-    //      resultado.Add(nuevo);
-    //    }
-    //    else
-    //    {
-    //      Console.WriteLine($"LOG ERROR - {linea}"); //  TODO agregar LOG
-    //    }
-    //  }
+          resultado.Add(nuevo);
+        }
+        else
+        {
+          Console.WriteLine($"LOG ERROR - {linea}"); //  TODO agregar LOG
+        }
+      }
 
-    //  return resultado;
-    //}
+      return resultado;
+    }
 
   }
 }
