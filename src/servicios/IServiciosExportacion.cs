@@ -10,5 +10,9 @@ namespace servicios
   public interface IServiciosExportacion
   {
     void ExportarListaDeLibros(IEnumerable<Libro> lista);
+
+    void ExportarListaDeAutores(IEnumerable<(string idLibro, string nombre)> autores);
+
+    void ClearDatabase();
   }
 }

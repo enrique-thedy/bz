@@ -60,6 +60,7 @@ namespace cli
           //  serv.AddScoped<ServiciosImportacion>();
           serv.AddScoped<IServiciosImportacion, ServiciosImportacion>();
           serv.AddScoped<IServiciosExportacion, ServiciosExportacion>();
+          serv.AddScoped<IServiciosStock, ServiciosStock>();
 
           serv.AddDbContext<ExportacionContext>(build =>
           {
@@ -67,8 +68,10 @@ namespace cli
             //  Sitio interesante para obtener cadenas de conexion para casi todos los proveedores...
             //
             build.UseSqlServer(ctx.Configuration.GetConnectionString("curso"));
+
             build.EnableDetailedErrors();
             build.EnableSensitiveDataLogging();
+            //if (ctx.HostingEnvironment.IsDevelopment()) { }
           });
 
           serv.AddScoped<Aplicacion>();

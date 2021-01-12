@@ -24,15 +24,18 @@ namespace console
 
     private readonly IServiciosExportacion _exp;
 
+    private readonly IServiciosStock _stock;
+
     private readonly IConfiguration _config;
 
     private readonly ILogger<Aplicacion> _logger;
 
-    public Aplicacion(IServiciosImportacion imp, IServiciosExportacion exp, IConfiguration config,
-      ILogger<Aplicacion> logger)
+    public Aplicacion(IServiciosImportacion imp, IServiciosExportacion exp, IServiciosStock stock,
+      IConfiguration config, ILogger<Aplicacion> logger)
     {
       _imp = imp;
       _exp = exp;
+      _stock = stock;
       _config = config;
       _logger = logger;
     }
@@ -49,7 +52,7 @@ namespace console
           "Importar Libros desde --file y ejecutar las pruebas en memoria",
           "Importar Libros desde --file y guardar en la DB",
           "Importar Autores desde --file y mostrar en pantalla",
-          "*** Importar Autores desde --file y guardar en la DB",
+          "Importar Autores desde --file y guardar en la DB",
           "Consultas varias desde el contexto",
           "Pruebas ingresando Libros"
         });
@@ -65,7 +68,7 @@ namespace console
         //  string file = @"D:\CURSOS\PTR2020_Avanzado\listados\libros.csv";  
         string file = _config["file"];
 
-        if (opcion.In(0, 2, 1) && file == null)
+        if (opcion.In(0, 2, 1, 3) && file == null)
           throw new ApplicationException("La opcion seleccionada necesita que se pase un archivo en --file");
 
         switch (opcion)
@@ -98,10 +101,11 @@ namespace console
                 _logger.LogInformation("Iniciando el proceso de exportacion");
 
                 //  eliminamos los datos previos??
-                //  if (Prompt.Confirm("Eliminamos datos previos?", true, "WARNING Esta operacion eliminara todos los datos de las 3 tablas de Articulos!!"))
-                //  {
-                //    _exp.ClearDatabase();
-                //  }
+                if (Prompt.Confirm("Eliminamos datos previos?", true,
+                  "WARNING Esta operacion eliminara todos los datos de las 3 tablas de Articulos!!"))
+                {
+                  _exp.ClearDatabase();
+                }
 
                 //  pasamos la responsabilidad de la exportacion al componente adecuado...
                 //
@@ -131,6 +135,27 @@ namespace console
             break;
 
           case 3:
+          {
+            if (Prompt.Confirm($"Es el archivo correcto? ==> {file}"))
+            {
+              _logger.LogInformation("Iniciando el procesamiento del archivo de Autores {archivo}", file);
+
+              var autoresTemp = _imp.ImportarAutores(file);
+
+              Console.WriteLine("Lista de autores importados...");
+
+              foreach (var item in autoresTemp)
+              {
+                Console.WriteLine($"Se importo el siguiente par (idLibro, autor) ==> {item}");
+
+                _logger.LogDebug("Se importo el siguiente par (idLibro, autor) ==> {tupla}", item);
+              }
+              _exp.ExportarListaDeAutores(autoresTemp);
+            }
+          }
+          break;
+
+          case 13:
             {
               string editorial = Prompt.Input<string>("Ingresar el nombre de una editorial");
 
@@ -142,10 +167,33 @@ namespace console
 
           case 4:
             {
-              Console.WriteLine($"Pruebas de ingresos varias para libros y autores:\n");
-              string titulo = Prompt.Input<string>("Ingresar titulo o parte del titulo");
+              Console.WriteLine($"Pruebas de consultas e ingresos varios para libros y autores:\n");
 
-              //var libroResultado = _exp.GetLibros(titulo).FirstOrDefault();
+              string criterio = Prompt.Input<string>("Ingresar criterio (titulo, editorial o autor)... ");
+
+              var libros = _stock.GetLibrosFromCriterio(criterio);
+
+              foreach (Libro libro in libros)
+              {
+                Console.WriteLine($"Titulo: {libro.Titulo} - Clave: {libro.ID_Real} - ISBN: {libro.ISBN13}");
+
+                Console.WriteLine("Autor(es) del libro...");
+                foreach (Autor autor in libro.Autores)
+                {
+                  Console.WriteLine($"Nombre: {autor.Nombre} - Libros Escritos: {autor.Libros.Count}");
+                }
+              }
+
+              string editorial = Prompt.Input<string>("Ingresar un nombre de editorial (exacto) ");
+
+              var titulos = _stock.ObtenerTitulosDeEditorial(editorial);
+
+              Console.WriteLine($"Titulos editados por {editorial}");
+
+              foreach ((Guid id, string titulo) item in titulos)
+              {
+                Console.WriteLine($"Titulo: {item.titulo} - ID: {item.id}");
+              }
 
               //if (libroResultado == null)
               //{

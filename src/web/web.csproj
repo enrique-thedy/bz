@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\entidades\entidades.csproj" />
+    <ProjectReference Include="..\servicios\servicios.csproj" />
+    <ProjectReference Include="..\utiles\utiles.csproj" />
+  </ItemGroup>
+
+</Project>

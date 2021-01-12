@@ -2,7 +2,10 @@
   "profiles": {
     "cli": {
       "commandName": "Project",
-      "commandLineArgs": "--file=D:\\CURSOS\\PTR2020_Avanzado\\repo\\listados\\libros.csv"
+      "commandLineArgs": "--file=D:\\CURSOS\\PTR2020_Avanzado\\repo\\listados\\autores.csv",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

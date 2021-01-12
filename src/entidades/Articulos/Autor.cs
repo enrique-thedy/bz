@@ -12,11 +12,11 @@ namespace Entidades.Articulos
 
     public string Biografia { get; set; }
 
-    public ISet<LibroAutor> AutorLibros { get; set; }
+    public ISet<Libro> Libros { get; set; }
 
     public Autor()
     {
-      AutorLibros = new HashSet<LibroAutor>();
+      Libros = new HashSet<Libro>();
     }
   }
 }

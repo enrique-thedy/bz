@@ -35,8 +35,16 @@ namespace datos
       //    .HasColumnName("Fecha_Publicacion")
       //    .HasDefaultValueSql("getdate()");
       //}
+
+
+      //  si no informamos nada al model builder, el GUID se genera en el cliente...
+      //  si queremos que se genere en el server tenemos que agregar
+      //    .HasDefaultValueSql("newsequentialid()"); 
+      //  puede ser cualquier nombre de funcion o bien ningun argumento!!
+
       builder.Property(lib => lib.ID_Real)
-        .HasColumnName("ID");
+        .HasColumnName("ID")
+        .HasDefaultValueSql(); 
 
       //  en este caso...como Publicacion es nullable, si no pongo un valor por defecto, cualquier fecha nula me
       //  produciria un error de insert...
@@ -67,6 +75,13 @@ namespace datos
         .HasColumnName("Promedio_Rating")
         .HasColumnType("float");
 
+      builder
+        .HasMany(lib => lib.Autores)
+        .WithMany(aut => aut.Libros)
+        .UsingEntity<Dictionary<string, object>>("Libros_Autores",
+          x => x.HasOne<Autor>().WithMany().HasForeignKey("ID_Autor"),
+          x => x.HasOne<Libro>().WithMany().HasForeignKey("ID_Libro"));
+
       //builder
       //  .HasOne(lib => lib.Editorial)
       //  .WithMany()
@@ -75,6 +90,13 @@ namespace datos
     }
   }
 
+  public class ConfigurarAutor : IEntityTypeConfiguration<Autor>
+  {
+    public void Configure(EntityTypeBuilder<Autor> builder)
+    {
+      builder.Property(aut => aut.Biografia).HasColumnName("Bio");
+    }
+  }
   public class ConfigurarUsuario : IEntityTypeConfiguration<Usuario>
   {
     public void Configure(EntityTypeBuilder<Usuario> builder)

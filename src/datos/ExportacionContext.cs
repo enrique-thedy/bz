@@ -18,6 +18,8 @@ namespace datos
     //  plural de Libro --> Libroes
     //
     public DbSet<Libro> Libros { get; set; }
+
+    public DbSet<Autor> Autores { get; set; }
     
     //  public DbSet<Usuario> Usuarios { get; set; }
 
@@ -36,6 +38,7 @@ namespace datos
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.ApplyConfiguration(new ConfigurarLibro());
+      modelBuilder.ApplyConfiguration(new ConfigurarAutor());
       base.OnModelCreating(modelBuilder);
     }
   }
