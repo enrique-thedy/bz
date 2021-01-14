@@ -21,11 +21,18 @@ namespace servicios
 
     public List<(Guid, string)> ObtenerTitulosDeEditorial(string editorial)
     {
-      return _ctx
-        .Libros
-        .FromSqlInterpolated($"select * from Libros where Editorial={editorial}")
-        .Select(x => Tuple.Create(x.ID_Real, x.Titulo).ToValueTuple())
-        .ToList();
+      if (editorial != null)
+        return _ctx
+          .Libros
+          .FromSqlInterpolated($"select * from Libros where Editorial={editorial}")
+          .Select(x => Tuple.Create(x.ID_Real, x.Titulo).ToValueTuple())
+          .ToList();
+      else
+        return _ctx
+          .Libros
+          .FromSqlInterpolated($"select * from Libros")
+          .Select(x => Tuple.Create(x.ID_Real, x.Titulo).ToValueTuple())
+          .ToList();
     }
 
     public IEnumerable<Libro> GetLibrosFromCriterio(string criterio)

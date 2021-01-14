@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Events;
 
 namespace web
 {
@@ -29,7 +31,16 @@ namespace web
         )
         .ConfigureWebHostDefaults(webBuilder =>
         {
-          webBuilder.UseStartup<Startup>();
+          webBuilder
+            .UseStartup<Startup>()
+            .UseSerilog((ctx, cfg) =>
+            {
+              cfg
+                .MinimumLevel.Verbose()
+                //  .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .WriteTo.Console()
+                .WriteTo.Seq("http://localhost:5341/dev");
+            });
         });
   }
 }

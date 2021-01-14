@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using datos;
+using Microsoft.EntityFrameworkCore;
 using servicios;
 using Servicios;
 
@@ -26,8 +28,15 @@ namespace web
     {
       services.AddControllersWithViews();
 
+      services.AddDbContext<ExportacionContext>(build =>
+      {
+        build.UseSqlServer(Configuration.GetConnectionString("curso"));
+        build.EnableDetailedErrors();
+        build.EnableSensitiveDataLogging();
+      });
+
       services.AddScoped<IServiciosImportacion, ServiciosImportacion>();
-      //  services.AddScoped<IServiciosStock, ServiciosStock>();
+      services.AddScoped<IServiciosStock, ServiciosStock>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,8 +59,8 @@ namespace web
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllerRoute(
-                  name: "default",
-                  pattern: "{controller=Home}/{action=Index}/{id?}");
+          name: "default",
+          pattern: "{controller=Home}/{action=Index}/{id?}");
       });
     }
   }

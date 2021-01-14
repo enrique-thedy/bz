@@ -1,0 +1,26 @@
+﻿@model List<(Guid id, string titulo)>
+
+@{
+  ViewData["Title"] = "Listar";
+}
+
+@section script_page
+{
+  <script>
+    $(document).ready(function() {
+      window.alert("Listar!!!");
+    });
+  </script>
+}
+
+<h1>@ViewBag.Encabezado</h1>
+  
+@foreach (var item in Model)
+{
+  <div>
+    <p>@item.id</p>
+    <p>@item.titulo</p>
+  </div>
+}
+
+
