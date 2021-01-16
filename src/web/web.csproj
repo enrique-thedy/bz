@@ -19,6 +19,9 @@
 
   <ItemGroup>
     <Folder Include="Models\DTO\" />
+    <Folder Include="wwwroot\imagenes\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>

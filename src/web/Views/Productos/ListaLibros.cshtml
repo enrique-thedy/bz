@@ -1,0 +1,22 @@
+﻿@using Entidades.Articulos
+@model IEnumerable<Libro>
+
+@{
+  ViewData["Title"] = "ListaLibros";
+}
+
+<h1>Lista de Libros Segun Criterio...</h1>
+
+<div class="container">
+
+  @foreach (var item in Model)
+  {
+    <div class="d-flex flex-column">
+      <h2>@item.Titulo</h2>
+      <img src="@item.LinkImagen" width="200" />
+      <p>@item.Precio</p>
+    </div>
+  }
+
+</div>
+

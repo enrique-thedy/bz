@@ -60,7 +60,7 @@ namespace web
       {
         endpoints.MapControllerRoute(
           name: "default",
-          pattern: "{controller=Home}/{action=Index}/{id?}");
+          pattern: "{controller=Productos}/{action=Inicio}/{id?}");
       });
     }
   }

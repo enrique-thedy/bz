@@ -1,0 +1,47 @@
+﻿@model CriterioViewModel
+@{
+  ViewData["Title"] = "Buscar Libros por Criterio";
+}
+
+<div class="row">
+
+  <div class="offset-1 col-9">
+    <div class="card m-4">
+      <h4 class="card-header text-white bg-primary text-center">Buscar Libros</h4>
+
+      <div asp-validation-summary="ModelOnly" class="text-danger"
+           data-summary-titulo="Lista de errores que impiden ingresar el usuario"></div>
+
+      <form asp-controller="Productos" asp-action="LibrosPorCriterio" method="post">
+
+        <div class="card-body">
+
+          <div class="form-group">
+            <label asp-for="Titulo">Titulo</label>
+            <input asp-for="Titulo" class="form-control form-control-sm" autofocus="autofocus" />
+
+            <span asp-validation-for="Titulo" class="text-danger"></span>
+          </div>
+
+          <div class="form-group">
+            <label asp-for="Editorial">Editorial</label>
+            <input asp-for="Editorial" class="form-control form-control-sm" />
+
+            <span asp-validation-for="Editorial" class="text-danger"></span>
+          </div>
+
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary float-right" type="submit">Buscar</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+
+
