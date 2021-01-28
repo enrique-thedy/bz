@@ -52,7 +52,21 @@ namespace servicios
 
     public bool AgregarAutor(Autor nuevo)
     {
-      throw new NotImplementedException();
+      try
+      {
+        if (_ctx.Autores.Any(aut => aut.Nombre == nuevo.Nombre))
+          return false;
+
+        _ctx.Autores.Add(nuevo);
+        _ctx.SaveChanges();
+
+        return true;
+      }
+      catch
+      {
+        //  LOG!!
+        return false;
+      }
     }
   }
 }

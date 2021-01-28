@@ -1,5 +1,7 @@
 ﻿@using Entidades.Articulos
+@using Microsoft.Extensions.Configuration
 @model IEnumerable<Libro>
+@inject IConfiguration Configuracion
 
 @{
   ViewData["Title"] = "ListaLibros";
@@ -7,15 +9,13 @@
 
 <h1>Lista de Libros Segun Criterio...</h1>
 
+<h2>@Configuracion["mensaje"]</h2>
+
 <div class="container">
 
   @foreach (var item in Model)
   {
-    <div class="d-flex flex-column">
-      <h2>@item.Titulo</h2>
-      <img src="@item.LinkImagen" width="200" />
-      <p>@item.Precio</p>
-    </div>
+    <partial name="_DetalleLibro" model="item" />
   }
 
 </div>

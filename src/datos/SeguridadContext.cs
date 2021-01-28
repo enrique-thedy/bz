@@ -12,10 +12,18 @@ namespace datos
   {
     public DbSet<Usuario> Usuarios { get; set; }
 
+    public DbSet<Perfil> Perfiles { get; set; }
+
+    public SeguridadContext(DbContextOptions<SeguridadContext> options) : base(options)
+    {
+
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.ApplyConfiguration(new ConfigurarUsuario());
-      
+      modelBuilder.ApplyConfiguration(new ConfigurarPerfil());
+
       base.OnModelCreating(modelBuilder);
     }
   }

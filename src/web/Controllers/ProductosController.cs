@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Entidades.Articulos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using servicios;
@@ -14,12 +15,14 @@ namespace web.Controllers
   public class ProductosController : Controller
   {
     private readonly IServiciosStock _stock;
+
     public ProductosController(ILogger<ProductosController> logger, IServiciosStock stock)
     {
       logger.LogWarning("Creado controlador {nombre}", nameof(ProductosController));
       _stock = stock;
     }
-
+    
+    [AllowAnonymous]
     public IActionResult Inicio()
     {
       return View();
@@ -37,7 +40,7 @@ namespace web.Controllers
     }
 
     [HttpPost]
-    public IActionResult LibrosPorCriterio(CriterioViewModel criterio)
+    public IActionResult LibrosPorCriterio(CriterioViewModel criterio, SegundoViewModel modelo)
     {
       //  en este momento, el binder no solamente enlazo las propiedades sino que validó el modelo con los datos
       //  disponibles ==> data annotations!!!
@@ -58,8 +61,34 @@ namespace web.Controllers
 
         return View("ListaLibros", resultado);
       }
+      else
+      {
+        ModelState.Clear();
 
-      return View();
+        if (TryValidateModel(criterio))
+        {
+          if (TryValidateModel(modelo))
+          {
+            var resultado = _stock.GetLibrosFromCriterio($"{criterio.Titulo} {criterio.Editorial}");
+
+            return View("ListaLibros", resultado);
+          }
+
+          //  quiere decir que el error esta en el segundo...
+          //  iteramos en la coleccion de errores...
+          foreach (var campo in ModelState.Keys)
+          {
+            //  ojo cada campo puede tener mas de un error diferente...
+            var errores = ModelState[campo].Errors;
+
+            foreach (var error in errores)
+              ModelState.AddModelError<SegundoViewModel>(model => model,
+                $"Campo {campo} ==> {error.ErrorMessage} - Valor actual: {ModelState[campo].AttemptedValue}");
+          }
+          return View();
+        }
+        return View();
+      }
     }
 
     /// <summary>
@@ -86,5 +115,49 @@ namespace web.Controllers
       return View(modelo);
     }
 
+    [HttpGet]
+    public IActionResult NuevoAutor()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    public IActionResult NuevoAutor(Autor nuevo)
+    {
+      //  aca no tenemos atributos ni problemas de binding por lo tanto siempre el modelo sera correcto!
+      //
+      if (ModelState.IsValid)
+      {
+        if (string.IsNullOrWhiteSpace(nuevo.Nombre))
+          ModelState.AddModelError<Autor>(autor => autor.Nombre, "El nombre no puede estar en blanco!!!");
+        else
+        {
+          if (nuevo.Nombre == "Sarasa")
+            ModelState.AddModelError<Autor>(autor => autor.Nombre, "Ese nombre de autor no puede existir...");
+          else
+          {
+            //  modelo correcto para agregarlo a la base de datos
+            //
+            if (_stock.AgregarAutor(nuevo))
+            {
+              ViewBag.NuevoAutor = nuevo;
+
+              ModelState.Clear();
+
+              return View();
+            }
+            else
+            {
+              ModelState.AddModelError<Autor>(autor => autor, "Error ingresando datos en la base de datos... revisar LOG");
+
+              return View(nuevo);
+            }
+          }
+        }
+
+        return View(nuevo);
+      }
+      return View();
+    }
   }
 }

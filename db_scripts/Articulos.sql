@@ -55,6 +55,10 @@ create table Autores
   constraint PK_Autores primary key (ID)
 )
 
+select * from Autores order by ID desc
+
+delete from Autores where ID >= 293
+
 --  drop table Libros_Autores
 
 create table Libros_Autores
@@ -80,9 +84,12 @@ create table Perfiles
   constraint PK_Perfiles primary key (ID)
 )
 
+select * from Perfiles
+
 /*
   Email_Valido --> la primera vez que ingresa tiene q validar el correo (no aplica si es empleado)
   Habilitado --> podria estar en false si hay muchos reintentos...si intenta recuperar contraseña...
+  Hashed_Password --> la dejamos en null porque no va a tener mapeo en el modelo de dominio
 */
 create table Usuarios
 (
@@ -95,7 +102,7 @@ create table Usuarios
   Habilitado          bit             not null    default(0),
   Fecha_Alta          smalldatetime   not null,
   Fecha_Nacimiento    date            not null,
-  Hashed_Password     varchar(100)    not null,
+  Hashed_Password     varchar(100),
   Imagen              image,
   Ultimo_Ingreso      smalldatetime,
   --
@@ -103,3 +110,9 @@ create table Usuarios
   constraint FK_Usuarios_Perfiles foreign key (ID_Perfil) references Perfiles(ID)
 )
 
+select PER.Nombre,PER.Tipo_Perfil, USR.* 
+from Usuarios as USR inner join Perfiles as PER on USR.ID_Perfil=PER.ID
+
+--  drop table Usuarios
+
+--  delete from Usuarios where Login='fdsfdsf'

@@ -1,0 +1,39 @@
+﻿
+@{
+  ViewData["Title"] = "Ingreso de Usuario";
+}
+
+<div class="row">
+
+  <div class="offset-1 col-9">
+    <div class="card m-4">
+      <h4 class="card-header text-white bg-primary text-center">Ingresar Usuario y Password</h4>
+
+      <form asp-controller="User" asp-action="Login" method="post">
+
+        <div class="card-body">
+
+          <div class="form-group">
+            <label for="Login">ID del Usuario</label>
+            <input class="form-control form-control-sm" autofocus="autofocus" name="Login" id="Login" />
+          </div>
+
+          <div class="form-group">
+            <label for="Password">Contraseña</label>
+            <input type="password" class="form-control form-control-sm" name="Password" id="Password">
+          </div>
+
+        </div>
+
+        <div class="card-footer">
+          <button class="btn btn-primary float-right" type="submit">Ingresar</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+

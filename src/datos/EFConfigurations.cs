@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace datos
 {
+  #region ARTICULOS
+
   public class ConfigurarLibro : IEntityTypeConfiguration<Libro>
   {
     public void Configure(EntityTypeBuilder<Libro> builder)
@@ -44,7 +46,7 @@ namespace datos
 
       builder.Property(lib => lib.ID_Real)
         .HasColumnName("ID")
-        .HasDefaultValueSql(); 
+        .HasDefaultValueSql();
 
       //  en este caso...como Publicacion es nullable, si no pongo un valor por defecto, cualquier fecha nula me
       //  produciria un error de insert...
@@ -97,11 +99,46 @@ namespace datos
       builder.Property(aut => aut.Biografia).HasColumnName("Bio");
     }
   }
+
+
+
+  #endregion
+
+
+  #region SEGURIDAD
+
   public class ConfigurarUsuario : IEntityTypeConfiguration<Usuario>
   {
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
-      throw new NotImplementedException();
+      //  Las dos siguientes son equivalentes...
+      //
+      //  builder.HasKey(usr => new {usr.Login, usr.FechaAlta});
+      //  builder.HasKey("Login", "FechaAlta");
+      //
+      builder.HasKey(usr => usr.Login); 
+      builder.Property(usr => usr.Correo).HasColumnName("Email");
+      builder.Property(usr => usr.LastLogin).HasColumnName("Ultimo_Ingreso");
+      builder.Property(usr => usr.FechaAlta).HasColumnName("Fecha_Alta");
+      builder.Property(usr => usr.Nacimiento).HasColumnName("Fecha_Nacimiento");
+
+      builder
+        .HasOne<Perfil>("Perfil")
+        .WithMany()
+        .HasForeignKey("ID_Perfil");
     }
   }
+
+  public class ConfigurarPerfil : IEntityTypeConfiguration<Perfil>
+  {
+    public void Configure(EntityTypeBuilder<Perfil> builder)
+    {
+      builder.Property<TipoPerfil>("Tipo").HasColumnName("Tipo_Perfil");
+
+      builder.HasMany<Usuario>().WithOne(usr => usr.Perfil).HasForeignKey("ID_Perfil");
+    }
+  }
+
+  #endregion
+
 }
