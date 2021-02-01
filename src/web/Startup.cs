@@ -6,13 +6,22 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using datos;
+using Entidades.Articulos;
+using entidades.Seguridad;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using servicios;
 using Servicios;
+using web.Extensiones;
+using web.Models;
 
 namespace web
 {
@@ -28,11 +37,18 @@ namespace web
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddHttpContextAccessor();
+
       services.AddSession();
 
       //  por defecto, todos los controller necesitan autorizacion!!
       //
-      services.AddControllersWithViews(options => options.Filters.Add(new AuthorizeFilter()));
+      services.AddControllersWithViews(options => options.Filters.Add(new AuthorizeFilter()))
+        .ConfigureApiBehaviorOptions(options =>
+        {
+          options.SuppressMapClientErrors = true;
+          options.SuppressModelStateInvalidFilter = true;
+        });
 
       services.AddDbContext<ExportacionContext>(build =>
       {
@@ -56,6 +72,18 @@ namespace web
 
       services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options => options.LoginPath = "/user/login");
+
+      ConfigurarAutomapper(services);
+    }
+
+    public void ConfigurarAutomapper(IServiceCollection services)
+    {
+      services.AddAutoMapper((sp, cfg) =>
+      {
+        cfg.CreateMap<Libro, LibroDTO>().ForMember(dto => dto.Costo,
+          cfg => cfg.MapFrom(lib => lib.Precio.HasValue ? lib.Precio.Value : 0.0M));
+
+      }, Assembly.GetExecutingAssembly());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,37 @@
+﻿@model entidades.Seguridad.Usuario
+
+<li class="dropdown">
+  <a id="userInfoNav" class="dropdown-toggle text-white" data-toggle="dropdown"
+     style="padding-bottom: 10px; padding-top: 10px; cursor: pointer;" title="">
+    <img width="36" src="~/imagenes/user.png" alt="Usuario" class="rounded-circle" />
+    @Model.Nombre
+  </a>
+
+  <ul class="dropdown-menu dropdown-menu-right">
+    <li>
+      <div class="user-info" style="width: 300px; ">
+        <div class="user-info-foto">
+          @*<img width="100" src="@avatar" alt="Usuario" class="rounded-circle" />*@
+          <img width="100" src="~/imagenes/user.png" alt="Usuario" class="rounded-circle" />
+        </div>
+        <div class="user-info-resto">
+          <div class="user-info-nombre">@Model.Nombre (@Model.Login)</div>
+          <div class="user-info-sector">@(Model.Perfil.Nombre ?? "Desconocido")</div>
+        </div>
+      </div>
+    </li>
+    <li class="dropdown-divider"></li>
+    <li>
+      <div class="d-flex" style="align-items: center;">
+        <div class="flex-column" style="width: 90%;">
+          <a class="text-dark user-info-link d-block">
+            Acceso a Opciones de Empleado
+          </a>
+          <a class="text-dark user-info-link d-block" asp-controller="User" asp-action="Logout">
+            Logout
+          </a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</li>

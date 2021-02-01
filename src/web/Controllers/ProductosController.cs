@@ -21,7 +21,7 @@ namespace web.Controllers
       logger.LogWarning("Creado controlador {nombre}", nameof(ProductosController));
       _stock = stock;
     }
-    
+
     [AllowAnonymous]
     public IActionResult Inicio()
     {
@@ -106,22 +106,21 @@ namespace web.Controllers
       return View();
     }
 
-    public IActionResult ObtenerDesdeCriterio(string crit)
+    [HttpGet]
+    public IActionResult BuscarAPI()
     {
-      IEnumerable<LibroDTO> modelo = null;//  _stock.GetLibrosFromCriterio(crit) --- mapear as LibroDTO
-
-      //  AutoMapper
-      //
-      return View(modelo);
+      return View();
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrador, StockAdmin")]
     public IActionResult NuevoAutor()
     {
       return View();
     }
 
     [HttpPost]
+    [Authorize(Roles = "Administrador, StockAdmin")]
     public IActionResult NuevoAutor(Autor nuevo)
     {
       //  aca no tenemos atributos ni problemas de binding por lo tanto siempre el modelo sera correcto!
@@ -159,5 +158,6 @@ namespace web.Controllers
       }
       return View();
     }
+
   }
 }

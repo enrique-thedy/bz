@@ -1,0 +1,179 @@
+﻿
+@{
+  ViewData["Title"] = "Busqueda Interactiva";
+}
+
+@section scripts_links
+{
+  <script src="~/lib/handlebars.js/handlebars.js"></script>
+  <script src="~/lib/vue/vue.js"></script>
+  <script src="~/lib/axios/axios.js"></script>
+}
+
+@section style_page
+{
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+}
+
+
+@section script_page
+{
+  
+  <script id="cardLibroTemplate" type="text/template">
+
+    <div>
+      <div class="d-flex flex-column" style="background-color: antiquewhite;">
+        <h3>{{item.titulo}}</h3>
+        <img :src="item.linkImagen" width="200" />
+        <p>{{item.costo}}</p>
+      </div>
+    </div>
+ 
+  
+  </script>
+
+  <script>
+    var libros;
+
+    $(document).ready(function () {
+      /*
+        ------------------------------
+
+                COMPONENTES VUE
+
+        ------------------------------
+      */
+
+      //  representa una tarjeta con datos de un libro en particular
+      //  podremos usarlo mediante el tag <cardLibro>
+      //
+      Vue.component("cardlibro",
+        {
+          //  id del template que debe estar en un <script> con formato moustache
+          //
+          template: "#cardLibroTemplate",
+
+          //  lista de propiedades que puedo setear desde el tag, pueden representar valores simples o un objeto
+          //  en nuestro caso sera un Libro (o LibroDTO)
+          //
+          props: ["item"]
+        });
+
+
+      libros = new Vue({
+        el: "#appVue",
+
+        data: {
+          lista: [],
+          criterio: "",
+          filtroInput: ""
+        },
+
+        //  permite crear variables que se pueden bindear pero que dependen de otras...
+        //
+        computed: {
+          mostrar: function () {
+            return this.criterio !== "";
+          }
+        },
+
+        methods: {
+          getLibros: function () {
+            /**
+              {
+                "titulo": "Pro OpenSolaris",
+                "costo": 2951.32,
+                "linkImagen": "http://...gbs_api"
+              },
+            */
+            axios({
+                method: "get",
+                url: `/api/libros/${this.criterio}`
+              })
+              .then(function(response) {
+                libros.lista = response.data;
+                //  console.log(response);
+              })
+              .catch(function(error) {
+                //  en axios el objeto jqXHR esta en error.request
+                const jqXHR = error.request;
+
+                switch (jqXHR.status) {
+                default:
+                  {
+                    //  manejo normal de errores...
+                    const titulo = `${jqXHR.status} - ${jqXHR.statusText}`;
+
+                    console.log(titulo);
+                  }
+                  break;
+                }
+                console.log(error);
+              });
+          }
+        },
+
+        //  observa una variable para ver cuando cambia...
+        //
+        watch: {
+          filtroInput: function (newFiltro, oldFiltro) {
+            if (newFiltro.length >= 3) {
+              this.criterio = newFiltro;
+              this.getLibros();
+            } else
+              this.criterio = "";
+          }
+        }
+      });
+
+      $("#filtroBusqueda").focus();
+
+    });
+
+  </script>
+
+}
+
+<div id="appVue">
+
+  <div class="row">
+
+    <div class="offset-1 col-9">
+      <div class="card m-4">
+        <h4 class="card-header text-white bg-primary text-center">Buscar Libros Interactivamente</h4>
+
+        <div class="card-body">
+
+          <div class="form-group">
+            <label for="filtroBusqueda">Criterio de Busqueda...</label>
+            <input type="text" name="filtroBusqueda" id="filtroBusqueda"
+                   v-model="filtroInput"
+                   placeholder="Ingresar criterio de busqueda..."
+                   class="form-control form-control-sm" autofocus="autofocus" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="offset-1 col-10" v-show="mostrar">
+      <h1>Lista de Libros segun el criterio [ {{ criterio }} ]</h1>
+
+      <div class="row">
+
+        <div v-cloak v-for="libro in lista" class="col-3 p-5">
+          <cardlibro v-bind:item="libro"></cardlibro>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

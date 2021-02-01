@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using web.Components
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -12,7 +13,7 @@
   
   <script src="~/lib/jquery/jquery.js"></script>
   <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="~/lib/popper.js/cjs/popper.js"></script>
+  <script src="~/lib/popper.js/umd/popper.js"></script>
 
   @RenderSection("scripts_links", false)
 
@@ -201,17 +202,24 @@
                   Consultar Libros por criterios
                 </a>
 
-                <a class="dropdown-item" asp-controller="Productos" asp-action="NuevoAutor">
-                  Ingresar Nuevo Autor
+                <a class="dropdown-item" asp-controller="Productos" asp-action="BuscarAPI">
+                  Consulta Interactiva de Libros (API)
                 </a>
+
+                <authorize roles="StockAdmin, Administrador">
+
+                  <a class="dropdown-item" asp-controller="Productos" asp-action="NuevoAutor">
+                    Ingresar Nuevo Autor
+                  </a>
+
+                </authorize>
 
               </div>
             </li>
           </ul>
 
           <ul class="navbar-nav">
-            @* @await Component.InvokeAsync(nameof(InfoUsuario)) *@
-
+            @await Component.InvokeAsync(nameof(InfoUsuario))
           </ul>
 
         </div>

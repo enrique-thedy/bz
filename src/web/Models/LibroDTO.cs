@@ -9,12 +9,8 @@ namespace web.Models
   {
     public string Titulo { get; set; }
 
-    public List<string> Autores { get; set; }
+    public decimal Costo { get; set; }
 
-    public decimal? Precio { get; set; }
-
-    public string Editorial { get; set; }
-
-    public string Imagen { get; set; }
+    public string LinkImagen { get; set; }
   }
 }

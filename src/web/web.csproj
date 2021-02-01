@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
@@ -19,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Models\DTO\" />
-    <Folder Include="wwwroot\imagenes\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>

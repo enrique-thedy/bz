@@ -8,6 +8,7 @@ using entidades.Seguridad;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Net.Http.Headers;
 using servicios;
 using web.Extensiones;
 
@@ -58,9 +59,9 @@ namespace web.Controllers
       //  La siguiente linea es para ejecutar Login sincronicamente, o sea que bloquea el pipeline de ASP
       //
       //  HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties()).RunSynchronously();
+      var props = new AuthenticationProperties() {AllowRefresh = false, IsPersistent = false};
 
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-        new AuthenticationProperties());
+      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props);
       //
       HttpContext.Session.Set<Usuario>("USER", userAut);
       //
@@ -71,10 +72,9 @@ namespace web.Controllers
     {
       HttpContext.Session.Remove("USER");
 
-      //  HttpContext.SignOutAsync();
+      HttpContext.SignOutAsync();
 
       return LocalRedirect("/");
-
     }
   }
 }
